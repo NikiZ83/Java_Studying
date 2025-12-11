@@ -2,7 +2,7 @@ import java.util.*;
 
 
 public class HashTable<K, V> {
-    private static class Entry<K, V> {
+    private static class Entry<K, V> {  // создаем класс одной пары ключ-значение
         private K key;
         private V value;
 
@@ -33,18 +33,19 @@ public class HashTable<K, V> {
         size = 0;
     }
 
-	    private int hash(K key) {
-	        if (key == null) return 0;
-	        return (key.hashCode() & 0x7FFFFFFF) % table.length;
-	    }
+    private int hash(K key) {
+        if (key == null) return 0;
+        return (key.hashCode() & 0x7FFFFFFF) % table.length;
+    }
 
-    /** Добавляет пару (key, value). Если ключ уже есть — обновляет значение. */
     public void put(K key, V value) {
         int index = hash(key);
+        
         if (table[index] == null) {
             table[index] = new LinkedList<>();
         }
-        for (Entry<K, V> entry : table[index]) {
+        
+        for (Entry<K, V> entry : table[index]) { 
             if (Objects.equals(entry.getKey(), key)) {
                 entry.setValue(value);
                 return;
@@ -54,10 +55,11 @@ public class HashTable<K, V> {
         size++;
     }
 
-    /** Возвращает значение по ключу или null, если не найдено. */
     public V get(K key) {
         int index = hash(key);
+        
         if (table[index] == null) return null;
+        
         for (Entry<K, V> entry : table[index]) {
             if (Objects.equals(entry.getKey(), key)) {
                 return entry.getValue();
@@ -66,10 +68,10 @@ public class HashTable<K, V> {
         return null;
     }
 
-    /** Удаляет запись по ключу и возвращает удалённое значение или null. */
     public V remove(K key) {
         int index = hash(key);
         if (table[index] == null) return null;
+        
         Iterator<Entry<K, V>> it = table[index].iterator();
         while (it.hasNext()) {
             Entry<K, V> entry = it.next();

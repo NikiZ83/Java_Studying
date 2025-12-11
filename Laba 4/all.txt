@@ -1,0 +1,344 @@
+Файл: ArrayAverage.java
+==================================================
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class ArrayAverage {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите размер массива: ");
+        
+        try {
+            int n = scanner.nextInt();
+            if (n <= 0) throw new IllegalArgumentException("Размер должен быть положительным");
+
+            int[] arr = new int[n];
+            System.out.println("Введите " + n + " чисел:");
+
+            int sum = 0;
+            for (int i = 0; i < n; i++) {
+                arr[i] = scanner.nextInt();
+                sum += arr[i];
+            }
+
+            double average = (double) sum / n;
+            System.out.println("Среднее арифметическое: " + average);
+
+        } catch (InputMismatchException e) {
+            System.out.println("Ошибка: введено не число!");
+        } catch (NegativeArraySizeException | IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Ошибка: выход за границы массива!");
+        } catch (Exception e) {
+            System.out.println("Неизвестная ошибка: " + e.getMessage());
+        }
+    }
+}
+==================================================
+
+Файл: DivisionByZeroException.java
+==================================================
+public class DivisionByZeroException extends Exception {
+    public DivisionByZeroException() {
+        super("Деление на ноль запрещено!");
+    }
+}
+==================================================
+
+Файл: EmptyNameException.java
+==================================================
+public class EmptyNameException extends Exception {
+    public EmptyNameException() {
+        super("Имя не может быть пустым!");
+    }
+}
+==================================================
+
+Файл: ExceptionLogger.java
+==================================================
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+
+public class ExceptionLogger {
+    private static final String LOG_FILE = "exception_log.txt";
+
+    public static void logException(Exception e) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(LOG_FILE, true))) {
+            pw.println("[" + LocalDateTime.now() + "] " + e.getClass().getSimpleName() + ": " + e.getMessage());
+            e.printStackTrace(pw);
+            pw.println("----------------------------------------");
+        } catch (IOException ex) {
+            System.out.println("Не удалось записать лог: " + ex.getMessage());
+        }
+    }
+}
+==================================================
+
+Файл: FileCopier.java
+==================================================
+import java.io.*;
+
+public class FileCopier {
+
+    public static void copyFile(String sourcePath, String destPath) {
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+
+        try {
+            System.out.println("Открываем исходный файл: " + sourcePath);
+            fis = new FileInputStream(sourcePath);  
+
+            System.out.println("Открываем файл для записи: " + destPath);
+            fos = new FileOutputStream(destPath);   
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            System.out.println("Копируем данные...");
+            while ((bytesRead = fis.read(buffer)) != -1) {  
+                fos.write(buffer, 0, bytesRead);      
+            }
+
+            System.out.println("Файл успешно скопирован!");
+
+        } catch (FileNotFoundException e) {
+            if (!new File(sourcePath).exists()) {
+                System.out.println("ОШИБКА ОТКРЫТИЯ: Исходный файл не существует: " + sourcePath);
+            } else if (!new File(destPath).getParentFile().exists()) {
+                System.out.println("ОШИБКА ОТКРЫТИЯ: Папка для записи не существует: " + new File(destPath).getParent());
+            } else {
+                System.out.println("ОШИБКА ОТКРЫТИЯ: Нет доступа к файлу: " + e.getMessage());
+            }
+
+        } catch (SecurityException e) {
+            System.out.println("ОШИБКА ДОСТУПА: Нет прав на чтение/запись: " + e.getMessage());
+
+        } catch (IOException e) {
+            System.out.println("ОШИБКА ЧТЕНИЯ/ЗАПИСИ: " + e.getMessage());
+
+        } finally {
+            try {
+                if (fis != null) {
+                    System.out.println("Закрываем исходный файл...");
+                    fis.close();
+                }
+            } catch (IOException e) {
+                System.out.println("ОШИБКА ПРИ ЗАКРЫТИИ ИСХОДНОГО ФАЙЛА: " + e.getMessage());
+            }
+
+            try {
+                if (fos != null) {
+                    System.out.println("Закрываем файл назначения...");
+                    fos.close();
+                }
+            } catch (IOException e) {
+                System.out.println("ОШИБКА ПРИ ЗАКРЫТИИ ФАЙЛА НАЗНАЧЕНИЯ: " + e.getMessage());
+            }
+        }
+    }
+}
+==================================================
+
+Файл: FileTooLargeException.java
+==================================================
+public class FileTooLargeException extends Exception {
+    public FileTooLargeException() {
+        super("Файл слишком большой (>10 МБ)!");
+    }
+}
+==================================================
+
+Файл: InvalidAgeException.java
+==================================================
+public class InvalidAgeException extends Exception {
+    public InvalidAgeException() {
+        super("Возраст должен быть от 0 до 150!");
+    }
+}
+==================================================
+
+Файл: InvalidEmailException.java
+==================================================
+public class InvalidEmailException extends Exception {
+    public InvalidEmailException() {
+        super("Некорректный email!");
+    }
+}
+==================================================
+
+Файл: Main.java
+==================================================
+// Main.java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            printMenu();
+            System.out.print("Выберите задание: ");
+
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка: введите число!");
+                continue;
+            }
+
+            if (choice == 0) {
+                System.out.println("Программа завершена.");
+                break;
+            }
+
+            try {
+                switch (choice) {
+                    case 1:
+                        runArrayAverage(scanner);
+                        break;
+                    case 2:
+                        runFileCopy(scanner);
+                        break;
+                    case 3:
+                        testCustomExceptions();
+                        break;
+                    default:
+                        System.out.println("Неверный выбор! Попробуйте снова.");
+                }
+            } catch (Exception e) {
+                ExceptionLogger.logException(e);
+                System.out.println("Произошла ошибка: " + e.getMessage());
+            }
+        }
+        scanner.close();
+    }
+
+    // Выводит главное меню программы
+    private static void printMenu() {
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println(" ЛАБОРАТОРНАЯ РАБОТА: ИСКЛЮЧЕНИЯ");
+        System.out.println("=".repeat(40));
+        System.out.println("1. Среднее арифметическое массива");
+        System.out.println("2. Копирование файла (все ошибки)");
+        System.out.println("3. Тестирование 8 пользовательских исключений");
+        System.out.println("0. Выход");
+        System.out.println("=".repeat(40));
+    }
+
+    // Запускает задание 1 – вычисление среднего арифметического
+    private static void runArrayAverage(Scanner scanner) {
+        ArrayAverage.main(new String[]{});
+    }
+
+    // Запускает задание 2 – копирование файла с обработкой всех ошибок
+    private static void runFileCopy(Scanner scanner) {
+        System.out.print("Введите путь к исходному файлу: ");
+        String source = scanner.nextLine().trim();
+        System.out.print("Введите путь к файлу назначения: ");
+        String destination = scanner.nextLine().trim();
+
+        if (source.isEmpty() || destination.isEmpty()) {
+            System.out.println("Ошибка: пути не могут быть пустыми!");
+            return;
+        }
+
+        FileCopier.copyFile(source, destination);
+    }
+
+    // Запускает задание 3 – тестирование 8 пользовательских исключений
+    private static void testCustomExceptions() {
+        System.out.println("\nТестирование пользовательских исключений:");
+        testException(() -> divide(10, 0), "Деление на ноль");
+        testException(() -> setAge(-5), "Некорректный возраст");
+        testException(() -> setName(""), "Пустое имя");
+        testException(() -> checkFileSize(15_000_000), "Слишком большой файл");
+        testException(() -> validateEmail("invalid"), "Некорректный email");
+        testException(() -> withdraw(100, 150), "Отрицательный баланс");
+        testException(() -> setPassword("123"), "Короткий пароль");
+        testException(() -> findUser("unknown"), "Пользователь не найден");
+    }
+
+    // Функциональный интерфейс для методов, которые могут бросить исключение
+    @FunctionalInterface
+    interface ThrowingRunnable {
+        void run() throws Exception;
+    }
+
+    // Универсальная обёртка для тестирования исключений
+    private static void testException(ThrowingRunnable action, String description) {
+        try {
+            action.run();
+        } catch (Exception e) {
+            System.out.println("Исключение: " + description);
+            ExceptionLogger.logException(e);
+        }
+    }
+
+    // Методы, бросающие пользовательские исключения (для тестов)
+
+    private static void divide(int a, int b) throws DivisionByZeroException {
+        if (b == 0) throw new DivisionByZeroException();
+        System.out.println(a / b);
+    }
+
+    private static void setAge(int age) throws InvalidAgeException {
+        if (age < 0 || age > 150) throw new InvalidAgeException();
+    }
+
+    private static void setName(String name) throws EmptyNameException {
+        if (name == null || name.trim().isEmpty()) throw new EmptyNameException();
+    }
+
+    private static void checkFileSize(long size) throws FileTooLargeException {
+        if (size > 10_000_000) throw new FileTooLargeException();
+    }
+
+    private static void validateEmail(String email) throws InvalidEmailException {
+        if (!email.contains("@") || !email.contains(".")) throw new InvalidEmailException();
+    }
+
+    private static void withdraw(double balance, double amount) throws NegativeBalanceException {
+        if (balance - amount < 0) throw new NegativeBalanceException();
+    }
+
+    private static void setPassword(String pass) throws PasswordTooShortException {
+        if (pass.length() < 6) throw new PasswordTooShortException();
+    }
+
+    private static void findUser(String username) throws UserNotFoundException {
+        if (!username.equals("admin")) throw new UserNotFoundException();
+    }
+}
+==================================================
+
+Файл: NegativeBalanceException.java
+==================================================
+public class NegativeBalanceException extends Exception {
+    public NegativeBalanceException() {
+        super("Баланс не может быть отрицательным!");
+    }
+}
+==================================================
+
+Файл: PasswordTooShortException.java
+==================================================
+public class PasswordTooShortException extends Exception {
+    public PasswordTooShortException() {
+        super("Пароль должен быть не менее 6 символов!");
+    }
+}
+==================================================
+
+Файл: UserNotFoundException.java
+==================================================
+public class UserNotFoundException extends Exception {
+    public UserNotFoundException() {
+        super("Пользователь не найден!");
+    }
+}
+==================================================
+
