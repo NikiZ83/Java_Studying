@@ -5,7 +5,7 @@ import java.util.*;
 public class TopWords {
     public static void main(String[] args) {
         // путь к файлу (поменяйте на свой)
-        String filePath = "C:\\text.txt";
+        String filePath = "C:\\Users\\Oliver\\Desktop\\ВУЗ\\ИТиП\\Java\\Laba 6\\text.txt";
         File file = new File(filePath);
 
         Scanner scanner = null;
